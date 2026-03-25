@@ -10,7 +10,9 @@
       "wasm_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/v0.1.0/extension.wasm",
       "manifest_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/v0.1.0/extension.toml",
       "size_bytes": 3145728,
-      "tags": ["ai", "audio", "stems"]
+      "tags": ["ai", "audio", "stems"],
+      "engine": ">=0.1.0",
+      "platforms": ["x86_64-darwin", "aarch64-darwin", "x86_64-linux", "aarch64-linux"]
     }
   ]
 }
