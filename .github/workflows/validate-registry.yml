@@ -1,0 +1,83 @@
+name: Validate Registry
+
+on:
+  push:
+    paths: ['registry.json']
+  pull_request:
+    paths: ['registry.json']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON syntax
+        run: python3 -m json.tool registry.json > /dev/null
+
+      - name: Validate schema and links
+        run: |
+          python3 - <<'EOF'
+          import json, sys, urllib.request, re
+
+          with open("registry.json") as f:
+              data = json.load(f)
+
+          errors = []
+
+          # Top-level schema
+          if "version" not in data:
+              errors.append("Missing top-level 'version' field")
+          if "extensions" not in data or not isinstance(data["extensions"], list):
+              errors.append("Missing or invalid 'extensions' array")
+              print("\n".join(errors))
+              sys.exit(1)
+
+          ids = set()
+          semver_re = re.compile(r"^\d+\.\d+\.\d+")
+          engine_re = re.compile(r"^[><=!~^*]")
+
+          for i, ext in enumerate(data["extensions"]):
+              prefix = f"extensions[{i}] ({ext.get('id', '?')})"
+
+              # Required fields
+              for field in ["id", "name", "version", "description", "wasm_url", "manifest_url"]:
+                  if not ext.get(field):
+                      errors.append(f"{prefix}: missing required field '{field}'")
+
+              # Duplicate IDs
+              eid = ext.get("id", "")
+              if eid in ids:
+                  errors.append(f"{prefix}: duplicate extension ID '{eid}'")
+              ids.add(eid)
+
+              # Semver check
+              ver = ext.get("version", "")
+              if ver and not semver_re.match(ver):
+                  errors.append(f"{prefix}: invalid semver version '{ver}'")
+
+              engine = ext.get("engine", "")
+              if engine and engine != "*" and not engine_re.match(engine):
+                  errors.append(f"{prefix}: invalid engine requirement '{engine}'")
+
+              # URL reachability
+              for url_field in ["wasm_url", "manifest_url"]:
+                  url = ext.get(url_field, "")
+                  if url:
+                      try:
+                          req = urllib.request.Request(url, method="HEAD")
+                          req.add_header("User-Agent", "dawai-registry-check")
+                          resp = urllib.request.urlopen(req, timeout=15)
+                          if resp.status != 200:
+                              errors.append(f"{prefix}: {url_field} returned HTTP {resp.status}")
+                      except Exception as e:
+                          errors.append(f"{prefix}: {url_field} unreachable: {e}")
+
+          if errors:
+              print("Registry validation failed:\n")
+              for e in errors:
+                  print(f"  - {e}")
+              sys.exit(1)
+          else:
+              print(f"Registry OK: {len(data['extensions'])} extension(s), all links reachable.")
+          EOF
