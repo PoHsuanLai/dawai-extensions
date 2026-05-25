@@ -1,0 +1,26 @@
+# Sonic Pi Extension Manifest
+
+id = "dawai.sonic-pi"
+name = "Sonic Pi"
+version = "0.2.0"
+publisher = "DAWAI"
+description = "Sonic Pi live coding language - create music with Ruby-based code. Bidirectional code/document sync via v0.8.0 WIT language-adapter interface."
+license = "MIT"
+engine = ">=0.1.0"
+extension_type = "wasm"
+kind = "language-adapter"
+main = "sonicpi_component.wasm"
+
+activation_events = ["onStartupFinished"]
+
+[permissions]
+network = false
+storage = false
+filesystem = false
+process = false
+
+[[contributes.languages]]
+id = "sonicpi"
+name = "Sonic Pi"
+extensions = [".rb", ".sp"]
+grammar = "ruby"
