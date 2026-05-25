@@ -26,6 +26,32 @@
       "tags": ["language", "live-coding", "ruby"],
       "engine": ">=0.1.0",
       "platforms": ["x86_64-darwin", "aarch64-darwin", "x86_64-linux", "aarch64-linux"]
+    },
+    {
+      "id": "dawai.sam-audio",
+      "name": "SAM Audio Source Separation",
+      "version": "0.1.0",
+      "description": "Text-prompted audio source separation using Meta's SAM Audio model. Separate any sound by describing it.",
+      "author": "DAWAI",
+      "wasm_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/sam-audio-v0.1.0/extension.wasm",
+      "manifest_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/sam-audio-v0.1.0/extension.toml",
+      "size_bytes": 2675903,
+      "tags": ["ai", "audio", "separation"],
+      "engine": ">=0.1.0",
+      "platforms": ["x86_64-darwin", "aarch64-darwin", "x86_64-linux", "aarch64-linux"]
+    },
+    {
+      "id": "dawai.yourmt3",
+      "name": "YourMT3+ Music Transcription",
+      "version": "0.1.0",
+      "description": "Multi-instrument music transcription to MIDI using YourMT3+ (13-channel polyphonic). Converts audio to MIDI notes.",
+      "author": "DAWAI",
+      "wasm_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/yourmt3-v0.1.0/extension.wasm",
+      "manifest_url": "https://github.com/PoHsuanLai/dawai-extensions/releases/download/yourmt3-v0.1.0/extension.toml",
+      "size_bytes": 2319988,
+      "tags": ["ai", "midi", "transcription"],
+      "engine": ">=0.1.0",
+      "platforms": ["x86_64-darwin", "aarch64-darwin", "x86_64-linux", "aarch64-linux"]
     }
   ]
 }
